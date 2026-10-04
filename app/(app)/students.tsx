@@ -6,6 +6,7 @@ import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, T
 export default function StudentsScreen() {
   const [users, setUsers] = useState<DirectoryUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
@@ -25,8 +26,13 @@ export default function StudentsScreen() {
       setError(loadError instanceof Error ? loadError.message : 'Unable to load users.');
     } finally {
       setLoading(false);
+      setHasLoaded(true);
     }
   }, []);
+
+  const handleRefresh = useCallback(() => {
+    void loadUsers();
+  }, [loadUsers]);
 
   useEffect(() => {
     // TODO EXAM: Call loadStudents() when the screen loads.
@@ -44,58 +50,65 @@ export default function StudentsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Students</Text>
-      <TextInput
-        style={styles.input}
-        accessibilityLabel="Search users by name, username, or email"
-        placeholder="Search by name, username, or email"
-        value={search}
-        onChangeText={setSearch}
-        autoCapitalize="none"
-      />
-      <Text style={styles.filterLabel}>Filter by course</Text>
-
-      <ScrollView
-        horizontal
-        style={styles.filterScroll}
-        contentContainerStyle={styles.filters}
-        showsHorizontalScrollIndicator
-        keyboardShouldPersistTaps="handled"
-      >
-        {[null, ...courses].map((course) => {
-          const selected = selectedCourse === course;
-          return (
-            <Pressable
-              key={course ?? 'all-courses'}
-              accessibilityRole="button"
-              accessibilityState={{ selected }}
-              onPress={() => setSelectedCourse(course)}
-              style={[styles.filterChip, selected && styles.filterChipSelected]}
-            >
-              <Text
-                style={[styles.filterText, selected && styles.filterTextSelected]}
-              >
-                {course ?? 'All courses'}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-      {loading ? (
+      {loading && !hasLoaded ? (
         <View style={styles.state}><ActivityIndicator color="#245bb2" /><Text style={styles.text}>Loading users…</Text></View>
-      ) : error ? (
-        <View style={styles.state} accessibilityLiveRegion="polite">
-          <Text style={styles.error}>{error}</Text>
-          <Pressable accessibilityRole="button" onPress={() => void loadUsers()}><Text style={styles.link}>Try Again</Text></Pressable>
-        </View>
       ) : (
         <FlatList
           style={styles.list}
           contentContainerStyle={styles.listContent}
+          refreshing={loading}
+          onRefresh={handleRefresh}
           data={filteredUsers}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <StudentCard student={item} />}
-          ListEmptyComponent={<View style={styles.state}><Text style={styles.text}>No users found.</Text></View>}
+          ListHeaderComponent={(
+            <View>
+              <Text style={styles.title}>Students</Text>
+              <TextInput
+                style={styles.input}
+                accessibilityLabel="Search users by name, username, or email"
+                placeholder="Search by name, username, or email"
+                value={search}
+                onChangeText={setSearch}
+                autoCapitalize="none"
+              />
+              <Text style={styles.filterLabel}>Filter by course</Text>
+              <ScrollView
+                horizontal
+                style={styles.filterScroll}
+                contentContainerStyle={styles.filters}
+                showsHorizontalScrollIndicator
+                keyboardShouldPersistTaps="handled"
+              >
+                {[null, ...courses].map((course) => {
+                  const selected = selectedCourse === course;
+                  const selectCourse = () => {
+                    setSelectedCourse(course);
+                    if (course === null) setSearch('');
+                  };
+                  return (
+                    <Pressable
+                      key={course ?? 'all-courses'}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected }}
+                      onPress={selectCourse}
+                      style={[styles.filterChip, selected && styles.filterChipSelected]}
+                    >
+                      <Text style={[styles.filterText, selected && styles.filterTextSelected]}>
+                        {course ?? 'All students'}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          )}
+          ListEmptyComponent={error ? (
+            <View style={styles.state} accessibilityLiveRegion="polite">
+              <Text style={styles.error}>{error}</Text>
+              <Pressable accessibilityRole="button" onPress={() => void loadUsers()}><Text style={styles.link}>Try Again</Text></Pressable>
+            </View>
+          ) : <View style={styles.state}><Text style={styles.text}>No users found.</Text></View>}
           keyboardShouldPersistTaps="handled"
         />
       )}
