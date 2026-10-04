@@ -1,6 +1,6 @@
+import { useAuth } from '@/hooks/useAuth';
 import { Link } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function DashboardScreen() {
   const { token } = useAuth();

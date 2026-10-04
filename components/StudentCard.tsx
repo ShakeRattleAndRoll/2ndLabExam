@@ -23,8 +23,8 @@ export default function StudentCard({ student }: { student: DirectoryUser }) {
 }
 
 const styles = StyleSheet.create({
-  card: { padding: 20, borderRadius: 12, backgroundColor: '#ffffff', marginBottom: 12, gap: 8 },
-  name: { color: '#17324d', fontSize: 18, fontWeight: '600' },
+  card: { width: '100%', alignSelf: 'stretch', padding: 20, borderRadius: 12, backgroundColor: '#ffffff', marginBottom: 12, gap: 8 },
+  name: { width: '100%', flexShrink: 1, color: '#17324d', fontSize: 18, fontWeight: '600', textAlign: 'left' },
   text: { color: '#536579' },
   button: { paddingVertical: 12, alignSelf: 'flex-start' },
   buttonText: { color: '#245bb2', fontWeight: '600' },
