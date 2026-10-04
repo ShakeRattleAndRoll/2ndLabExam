@@ -1,10 +1,23 @@
+import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function ProfileScreen() {
   const { user, token, logout } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
   // TODO EXAM: Load GET /profile with fetch(), async/await, and the Bearer token.
-  // TODO EXAM: Add loading/error state with useState and call the loader using useEffect.
+  const loadProfile = async () => {
+    setLoading(true);
+    setError('');
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    void loadProfile();
+  }, []);
+
   // TODO EXAM: Check response.ok, handle 401 Unauthorized, and display returned profile data.
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -17,7 +30,6 @@ export default function ProfileScreen() {
       </View>
       <Text style={styles.text}>Session Status: {token ? 'Authenticated' : 'Not Available'}</Text>
       <Pressable accessibilityRole="button" style={styles.button} onPress={logout}><Text style={styles.buttonText}>LOGOUT</Text></Pressable>
-      <Text style={styles.note}>Exam starter: complete logout() in AuthContext.</Text>
     </ScrollView>
   );
 }
