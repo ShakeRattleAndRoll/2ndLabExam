@@ -1,27 +1,23 @@
+import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import type { DirectoryUser } from '@/constants/users';
 
 // TODO EXAM: Match these fields to the provided API response.
-export type Student = {
-  id?: string | number;
-  name?: string | null;
-  email?: string | null;
-  course?: string | null;
-};
+export type Student = DirectoryUser;
 
-export default function StudentCard({ student }: { student: Student }) {
-  const handleViewDetails = () => {
+export default function StudentCard({ student }: { student: DirectoryUser }) {
     // TODO EXAM: Check that the student has an id.
     // TODO EXAM: Use Expo Router to navigate to /student/[id] with this student's id.
-  };
-
   return (
     <View style={styles.card}>
-      <Text style={styles.name}>{student.name || 'Name not available'}</Text>
-      <Text style={styles.text}>{student.email || 'Email not available'}</Text>
-      {student.course ? <Text style={styles.text}>{student.course}</Text> : null}
-      <Pressable accessibilityRole="button" style={styles.button} onPress={handleViewDetails}>
-        <Text style={styles.buttonText}>View Details</Text>
-      </Pressable>
+      <Text style={styles.name}>{student.name}</Text>
+      <Text style={styles.text}>{student.email}</Text>
+      <Text style={styles.text}>Course: {student.course}</Text>
+      <Link href={{ pathname: '/student/[id]', params: { id: String(student.id) } }} asChild>
+        <Pressable accessibilityRole="button" style={styles.button}>
+          <Text style={styles.buttonText}>View Details</Text>
+        </Pressable>
+      </Link>
     </View>
   );
 }

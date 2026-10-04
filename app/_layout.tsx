@@ -30,7 +30,7 @@ function AuthNavigation() {
     <Stack screenOptions={{ headerTintColor: '#17324d' }}>
       <Stack.Screen name="sign-in" options={{ headerShown: false }} />
       <Stack.Screen name="(app)" options={{ headerShown: false }} />
-      <Stack.Screen name="student/[id]" options={{ title: 'Student Details' }} />
+      <Stack.Screen name="student/[id]" options={{ title: 'User Details' }} />
     </Stack>
   );
 }

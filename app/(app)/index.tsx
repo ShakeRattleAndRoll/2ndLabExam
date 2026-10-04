@@ -12,7 +12,7 @@ export default function DashboardScreen() {
       <Text style={styles.subtitle}>Your student services in one place.</Text>
       <View style={styles.card}>
         <Text style={styles.heading}>Quick Actions</Text>
-        <Link href="/(app)/students" asChild><Pressable accessibilityRole="button" style={styles.button}><Text style={styles.buttonText}>View Students</Text></Pressable></Link>
+        <Link href="/(app)/students" asChild><Pressable accessibilityRole="button" style={styles.button}><Text style={styles.buttonText}>Browse Users</Text></Pressable></Link>
         <Link href="/(app)/profile" asChild><Pressable accessibilityRole="button" style={styles.button}><Text style={styles.buttonText}>My Profile</Text></Pressable></Link>
       </View>
       <View style={styles.card}>
